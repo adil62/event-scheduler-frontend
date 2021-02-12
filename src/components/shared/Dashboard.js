@@ -10,6 +10,7 @@ import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
+import classNames from "classnames";
 
 import Sidebar from "./Sidebar";
 
@@ -18,10 +19,16 @@ const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
+    height: "100%!important",
+    "& .MuiDrawer-docked": {
+      height: "100%",
+    },
   },
+
   toolbar: {
     paddingRight: 24,
   },
+
   toolbarIcon: {
     display: "flex",
     alignItems: "center",
@@ -62,6 +69,7 @@ const useStyles = makeStyles((theme) => ({
   },
   drawerPaperClose: {
     overflowX: "hidden",
+    height: "100%!important",
     transition: theme.transitions.create("width", {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
@@ -107,7 +115,13 @@ const Dashboard = ({ content: Content }) => {
       <CssBaseline />
       <Grid container>
         <Grid item sm={12}>
-          <AppBar position="absolute">
+          <AppBar
+            position="absolute"
+            className={classNames(
+              classes.appBar,
+              isSidebarOpen && classes.appBarShift
+            )}
+          >
             <Toolbar
               disableGutters={!isSidebarOpen}
               className={classes.toolbar}
@@ -116,6 +130,10 @@ const Dashboard = ({ content: Content }) => {
                 color="inherit"
                 aria-label="Open drawer"
                 onClick={handleDrawerOpen}
+                className={classNames(
+                  classes.menuButton,
+                  isSidebarOpen && classes.menuButtonHidden
+                )}
               >
                 <MenuIcon />
               </IconButton>
@@ -126,7 +144,16 @@ const Dashboard = ({ content: Content }) => {
           </AppBar>
         </Grid>
         <Grid item sm={2}>
-          <Drawer variant="permanent" open={isSidebarOpen}>
+          <Drawer
+            variant="permanent"
+            open={isSidebarOpen}
+            classes={{
+              paper: classNames(
+                classes.drawerPaper,
+                !isSidebarOpen && classes.drawerPaperClose
+              ),
+            }}
+          >
             <div className={classes.toolbarIcon}>
               <IconButton onClick={handleDrawerClose}>
                 <ChevronLeftIcon />
