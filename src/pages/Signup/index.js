@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
@@ -9,7 +10,11 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useHistory } from "react-router-dom";
+import { useFormik } from "formik";
+import * as yup from "yup";
+
+import AuthAPI from "../../api/Auth";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -35,8 +40,48 @@ const LinkToLogin = React.forwardRef((props, ref) => (
   <RouterLink ref={ref} to="/login" {...props} />
 ));
 
-export default function SignUp() {
+const validationSchema = yup.object({
+  email: yup
+    .string()
+    .email("Enter a valid email")
+    .required("Email is required"),
+  password: yup
+    .string()
+    .min(8, "Password should be of minimum 8 characters length")
+    .required("Password is required"),
+  firstName: yup
+    .string()
+    .min(4, "First name should be of minimum 4 characters length")
+    .required("First name is required"),
+  lastName: yup
+    .string()
+    .min(4, "Last name should be of minimum 4 characters length")
+    .required("Last name is required"),
+});
+
+const Signup = () => {
   const classes = useStyles();
+  const history = useHistory();
+
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+      firstName: "",
+      lastName: "",
+    },
+    validationSchema: validationSchema,
+    onSubmit: async (values) => {
+      try {
+        const resp = await AuthAPI.register(values);
+        // if succesful goto login
+        console.log(resp);
+        history.push("/login");
+      } catch (err) {
+        console.log(err);
+      }
+    },
+  });
 
   return (
     <Container component="main" maxWidth="xs">
@@ -48,7 +93,11 @@ export default function SignUp() {
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
-        <form className={classes.form} noValidate>
+        <form
+          className={classes.form}
+          noValidate
+          onSubmit={formik.handleSubmit}
+        >
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
@@ -60,6 +109,12 @@ export default function SignUp() {
                 id="firstName"
                 label="First Name"
                 autoFocus
+                value={formik.values.firstName}
+                onChange={formik.handleChange}
+                error={
+                  formik.touched.firstName && Boolean(formik.errors.firstName)
+                }
+                helperText={formik.touched.firstName && formik.errors.firstName}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -71,6 +126,12 @@ export default function SignUp() {
                 label="Last Name"
                 name="lastName"
                 autoComplete="lname"
+                value={formik.values.lastName}
+                onChange={formik.handleChange}
+                error={
+                  formik.touched.lastName && Boolean(formik.errors.lastName)
+                }
+                helperText={formik.touched.lastName && formik.errors.lastName}
               />
             </Grid>
             <Grid item xs={12}>
@@ -82,6 +143,10 @@ export default function SignUp() {
                 label="Email Address"
                 name="email"
                 autoComplete="email"
+                value={formik.values.email}
+                onChange={formik.handleChange}
+                error={formik.touched.email && Boolean(formik.errors.email)}
+                helperText={formik.touched.email && formik.errors.email}
               />
             </Grid>
             <Grid item xs={12}>
@@ -94,6 +159,12 @@ export default function SignUp() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                value={formik.values.password}
+                onChange={formik.handleChange}
+                error={
+                  formik.touched.password && Boolean(formik.errors.password)
+                }
+                helperText={formik.touched.password && formik.errors.password}
               />
             </Grid>
           </Grid>
@@ -117,4 +188,6 @@ export default function SignUp() {
       </div>
     </Container>
   );
-}
+};
+
+export default Signup;
