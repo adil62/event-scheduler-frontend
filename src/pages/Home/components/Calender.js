@@ -54,7 +54,12 @@ const Calender = () => {
 
   return (
     <Box>
-      <Typography component="h1" variant="h5" className={classes.mb3}>
+      <Typography
+        align="center"
+        component="h1"
+        variant="h5"
+        className={classes.mb3}
+      >
         View schedules
       </Typography>
       <Paper>
