@@ -16,15 +16,6 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import EventAPI from "../../../api/Event";
 
-// const appointments = [
-//   {
-//     title: "Website Re-Design Plan 421",
-//     startDate: new Date(2021, 1, 13, 9, 30),
-//     endDate: new Date(2021, 1, 13, 11, 30),
-//   },
-
-// ];
-
 const useStyles = makeStyles((theme) => ({
   mb3: {
     marginBottom: theme.spacing(2),
@@ -46,7 +37,6 @@ const Calender = () => {
 
   useEffect(() => {
     EventAPI.show().then((res) => {
-      // console.log(res);
       setAppointments(
         res?.data?.schedules.map((item) => ({
           title: item.name,

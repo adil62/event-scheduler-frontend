@@ -28,7 +28,9 @@ const useStyles = makeStyles((theme) => ({
       height: "100%",
     },
   },
-
+  h100: {
+    height: "100vh",
+  },
   toolbar: {
     paddingRight: 24,
   },
@@ -128,8 +130,8 @@ const Dashboard = ({ content: Content }) => {
 
   const onLogout = () => {
     // remove the token
-    // redirect to login
     localStorage.removeItem("jwtToken");
+    // redirect to login
     history.push("/login");
   };
 
@@ -192,7 +194,7 @@ const Dashboard = ({ content: Content }) => {
             </Toolbar>
           </AppBar>
         </Grid>
-        <Grid item sm={2}>
+        <Grid item sm={2} className={classes.h100}>
           <Drawer
             variant="permanent"
             open={isSidebarOpen}
