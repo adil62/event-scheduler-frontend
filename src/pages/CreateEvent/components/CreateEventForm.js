@@ -15,18 +15,18 @@ import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
-
 import {
   KeyboardTimePicker,
   MuiPickersUtilsProvider,
 } from "@material-ui/pickers";
-import Autocomplete from "@material-ui/lab/Autocomplete";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import { Link as RouterLink, useHistory } from "react-router-dom";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import AuthAPI from "../../../api/Auth";
+import EventAPI from "../../../api/Event";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -62,17 +62,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const validationSchema = yup.object({
-  email: yup
-    .string()
-    .email("Enter a valid email")
-    .required("Email is required"),
-  password: yup
-    .string()
-    .min(8, "Password should be of minimum 8 characters length")
-    .required("Password is required"),
-});
-
 const days = [
   "Monday",
   "Tuesday",
@@ -83,23 +72,33 @@ const days = [
   "Sunday",
 ];
 
+const validationSchema = yup.object({
+  name: yup.string().required("Name is required"),
+  desc: yup.string().required("Desc is required"),
+});
+
 const CreateEventForm = () => {
   const classes = useStyles();
   const history = useHistory();
 
   const formik = useFormik({
     initialValues: {
-      email: "",
-      password: "",
-      firstName: "",
-      lastName: "",
-      dayOfWeek: [days[0]],
+      name: "",
+      desc: "",
+      dayOfWeek: days[0],
+      startTime: "09:00",
+      endTime: "10:00",
     },
     validationSchema: validationSchema,
-    onSubmit: async (values) => {
+    onSubmit: async (values, { resetForm }) => {
+      console.log(values);
       try {
+        const resp = await EventAPI.create(values);
+        toast("Successfully created event.");
+        resetForm();
       } catch (err) {
         console.log(err);
+        toast.error("Failed creating event.");
       }
     },
   });
@@ -107,6 +106,7 @@ const CreateEventForm = () => {
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
+      <ToastContainer />
       <div className={classes.paper}>
         <Typography component="h1" variant="h5">
           Create a new event
@@ -154,7 +154,6 @@ const CreateEventForm = () => {
             label="Start time"
             type="time"
             margin="normal"
-            defaultValue="07:30"
             InputLabelProps={{
               shrink: true,
             }}
@@ -170,7 +169,6 @@ const CreateEventForm = () => {
             name="endTime"
             label="End time"
             type="time"
-            defaultValue="07:30"
             margin="normal"
             InputLabelProps={{
               shrink: true,
@@ -188,7 +186,6 @@ const CreateEventForm = () => {
             labelId="dayOfWeekLabel"
             id="dayOfWeek"
             name="dayOfWeek"
-            multiple
             value={formik.values.dayOfWeek}
             onChange={formik.handleChange}
           >

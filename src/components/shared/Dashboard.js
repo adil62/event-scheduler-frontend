@@ -9,10 +9,14 @@ import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import { makeStyles } from "@material-ui/core/styles";
+import PersonIcon from "@material-ui/icons/Person";
 import Grid from "@material-ui/core/Grid";
 import classNames from "classnames";
-
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
 import Sidebar from "./Sidebar";
+import PowerSettingsNewIcon from "@material-ui/icons/PowerSettingsNew";
+import { useHistory } from "react-router-dom";
 
 const drawerWidth = 240;
 
@@ -29,6 +33,15 @@ const useStyles = makeStyles((theme) => ({
     paddingRight: 24,
   },
 
+  powerButton: {
+    marginRight: theme.spacing(2),
+  },
+
+  personIcon: {
+    cursor: "pointer",
+    marginLeft: "auto",
+  },
+
   toolbarIcon: {
     display: "flex",
     alignItems: "center",
@@ -36,6 +49,7 @@ const useStyles = makeStyles((theme) => ({
     padding: "0 8px",
     ...theme.mixins.toolbar,
   },
+
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(["width", "margin"], {
@@ -83,8 +97,10 @@ const useStyles = makeStyles((theme) => ({
   content: {
     flexGrow: 1,
     padding: theme.spacing.unit * 3,
-    height: "100vh",
-    overflow: "auto",
+    width: "93%",
+    marginLeft: "auto",
+    marginRight: "auto",
+    marginBottom: theme.spacing(2),
   },
   chartContainer: {
     marginLeft: -22,
@@ -99,6 +115,23 @@ const useStyles = makeStyles((theme) => ({
 
 const Dashboard = ({ content: Content }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const history = useHistory();
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const onLogout = () => {
+    // remove the token
+    // redirect to login
+    localStorage.removeItem("jwtToken");
+    history.push("/login");
+  };
 
   const handleDrawerOpen = () => {
     setIsSidebarOpen(true);
@@ -140,6 +173,22 @@ const Dashboard = ({ content: Content }) => {
               <Typography component="h1" variant="h6" color="inherit" noWrap>
                 Dashboard
               </Typography>
+              <PersonIcon
+                onClick={handleClick}
+                className={classes.personIcon}
+              />
+              <Menu
+                id="simple-menu"
+                anchorEl={anchorEl}
+                keepMounted
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+              >
+                <MenuItem onClick={onLogout}>
+                  <PowerSettingsNewIcon className={classes.powerButton} />
+                  Logout
+                </MenuItem>
+              </Menu>
             </Toolbar>
           </AppBar>
         </Grid>

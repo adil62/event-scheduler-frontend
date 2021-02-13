@@ -13,6 +13,7 @@ import {
   AppointmentTooltip,
   AppointmentForm,
 } from "@devexpress/dx-react-scheduler-material-ui";
+import { makeStyles } from "@material-ui/core/styles";
 
 const appointments = [
   {
@@ -57,24 +58,34 @@ const appointments = [
   },
 ];
 
-const Calender = () => (
-  <Box>
-    <Typography component="h1" variant="h5">
-      View schedules
-    </Typography>
-    <Paper>
-      <Scheduler data={appointments}>
-        <ViewState defaultCurrentDate="2021-02-21" />
-        <MonthView />
-        <Toolbar />
-        <DateNavigator />
-        <TodayButton />
-        <Appointments />
-        <AppointmentTooltip showCloseButton showOpenButton />
-        <AppointmentForm readOnly />
-      </Scheduler>
-    </Paper>
-  </Box>
-);
+const useStyles = makeStyles((theme) => ({
+  mb3: {
+    marginBottom: theme.spacing(2),
+  },
+}));
+
+const Calender = () => {
+  const classes = useStyles();
+
+  return (
+    <Box>
+      <Typography component="h1" variant="h5" className={classes.mb3}>
+        View schedules
+      </Typography>
+      <Paper>
+        <Scheduler data={appointments}>
+          <ViewState defaultCurrentDate="2021-02-21" />
+          <MonthView />
+          <Toolbar />
+          <DateNavigator />
+          <TodayButton />
+          <Appointments />
+          <AppointmentTooltip showCloseButton showOpenButton />
+          <AppointmentForm readOnly />
+        </Scheduler>
+      </Paper>
+    </Box>
+  );
+};
 
 export default Calender;
