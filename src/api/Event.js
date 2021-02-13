@@ -2,5 +2,6 @@
 import axios from ".";
 
 const create = (data) => axios.post("/event", data);
+const show = () => axios.get("/event");
 
-export default { create };
+export default { create, show };

@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState, useEffect } from "react";
 import Paper from "@material-ui/core/Paper";
 import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
@@ -14,49 +14,16 @@ import {
   AppointmentForm,
 } from "@devexpress/dx-react-scheduler-material-ui";
 import { makeStyles } from "@material-ui/core/styles";
+import EventAPI from "../../../api/Event";
 
-const appointments = [
-  {
-    title: "Website Re-Design Plan 421",
-    startDate: new Date(2021, 1, 13, 9, 30),
-    endDate: new Date(2021, 1, 13, 11, 30),
-  },
-  {
-    title: "Book Flights to San Fran for Sales Trip",
-    startDate: new Date(2018, 6, 23, 12, 0),
-    endDate: new Date(2018, 6, 23, 13, 0),
-  },
-  {
-    title: "Install New Router in Dev Room",
-    startDate: new Date(2018, 6, 23, 14, 30),
-    endDate: new Date(2018, 6, 23, 15, 30),
-  },
-  {
-    title: "Approve Personal Computer Upgrade Plan",
-    startDate: new Date(2018, 6, 24, 10, 0),
-    endDate: new Date(2018, 6, 24, 11, 0),
-  },
-  {
-    title: "Approve Personal Computer Upgrade Plan",
-    startDate: new Date(2020, 6, 24, 10, 0),
-    endDate: new Date(2020, 6, 24, 11, 0),
-  },
-  {
-    title: "Approve Personal Computer Upgrade Plan22",
-    startDate: new Date(2020, 6, 24, 10, 0),
-    endDate: new Date(2020, 6, 24, 11, 0),
-  },
-  {
-    title: "Approve Personal Computer Upgrade Plan33",
-    startDate: new Date(2021, 6, 24, 10, 0),
-    endDate: new Date(2021, 6, 24, 11, 0),
-  },
-  {
-    title: "Approve Personal Computer Upgrade Plan44",
-    startDate: new Date(2020, 6, 24, 10, 0),
-    endDate: new Date(2020, 6, 24, 11, 0),
-  },
-];
+// const appointments = [
+//   {
+//     title: "Website Re-Design Plan 421",
+//     startDate: new Date(2021, 1, 13, 9, 30),
+//     endDate: new Date(2021, 1, 13, 11, 30),
+//   },
+
+// ];
 
 const useStyles = makeStyles((theme) => ({
   mb3: {
@@ -64,8 +31,36 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+// replace existing time with given time string in the date string.
+const replaceTimeInDate = (dateString, timeString, name) => {
+  if (!dateString || !timeString) return;
+
+  let dateArr = dateString.split(" ");
+
+  return dateArr[0] + " " + timeString;
+};
+
 const Calender = () => {
   const classes = useStyles();
+  const [appointments, setAppointments] = useState([]);
+
+  useEffect(() => {
+    EventAPI.show().then((res) => {
+      // console.log(res);
+      setAppointments(
+        res?.data?.schedules.map((item) => ({
+          title: item.name,
+          startDate: new Date(
+            replaceTimeInDate(item.schedule_date, item.start_time, item.name)
+          ),
+          endDate: new Date(
+            replaceTimeInDate(item.schedule_date, item.end_time, item.name)
+          ),
+        }))
+      );
+    });
+  }, []);
+  console.log(appointments);
 
   return (
     <Box>
