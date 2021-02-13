@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // replace existing time with given time string in the date string.
-const replaceTimeInDate = (dateString, timeString, name) => {
+const replaceTimeInDate = (dateString, timeString) => {
   if (!dateString || !timeString) return;
 
   let dateArr = dateString.split(" ");
@@ -41,16 +41,15 @@ const Calender = () => {
         res?.data?.schedules.map((item) => ({
           title: item.name,
           startDate: new Date(
-            replaceTimeInDate(item.schedule_date, item.start_time, item.name)
+            replaceTimeInDate(item.schedule_date, item.start_time)
           ),
           endDate: new Date(
-            replaceTimeInDate(item.schedule_date, item.end_time, item.name)
+            replaceTimeInDate(item.schedule_date, item.end_time)
           ),
         }))
       );
     });
   }, []);
-  console.log(appointments);
 
   return (
     <Box>
