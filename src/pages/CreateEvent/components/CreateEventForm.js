@@ -91,10 +91,9 @@ const CreateEventForm = () => {
     },
     validationSchema: validationSchema,
     onSubmit: async (values, { resetForm }) => {
-      console.log(values);
       try {
         const resp = await EventAPI.create(values);
-        toast("Successfully created event.");
+        toast.success("Successfully created event.");
         resetForm();
       } catch (err) {
         console.log(err);
