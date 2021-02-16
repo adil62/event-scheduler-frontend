@@ -29,11 +29,17 @@ import * as yup from "yup";
 import EventAPI from "../../../api/Event";
 
 const useStyles = makeStyles((theme) => ({
+  headingDescText: {
+    marginTop: theme.spacing(1),
+    fontSize: "1.0rem",
+    fontWeight: 300,
+    lineHeight: 1.6,
+    letterSpacing: "0.0075em",
+  },
   paper: {
     marginTop: theme.spacing(3),
     display: "flex",
     flexDirection: "column",
-    alignItems: "center",
   },
   timePickerWrapper: {
     margin: theme.spacing(1),
@@ -110,6 +116,9 @@ const CreateEventForm = () => {
         <Typography component="h1" variant="h5">
           Create a new event
         </Typography>
+        <span className={classes.headingDescText}>
+          Creates recurring schedules on every selected week-day upto 90days.
+        </span>
         <form
           className={classes.form}
           noValidate
